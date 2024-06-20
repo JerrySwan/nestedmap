@@ -33,7 +33,14 @@ module Data.Nested.Internal
 
 import qualified Data.List as L
 import Prelude.Unicode ((⊥))
-import Prelude (Num, (+))
+import Prelude
+{-
+import Prelude (
+  Num
+  , (+)
+  , Semigroup -- JS
+  )
+-}
 import Data.Maybe (Maybe(Just, Nothing), maybe, isJust)
 import Data.Int (Int)
 import Data.Bool (Bool, otherwise)
@@ -70,9 +77,17 @@ instance Functor (Forest κ) where
 instance Functor (Tree κ) where
   fmap f (Tree v ts) = Tree (f v) (f <$> ts)
 
+-- JS
+instance (Ord κ, Monoid α) ⇒ Semigroup (Forest κ α) where
+  (<>)  = undefined
+
 instance (Ord κ, Monoid α) ⇒ Monoid (Forest κ α) where
   mempty  = emptyForest
   mappend = unionForestWith (⊕)
+
+-- JS
+instance (Ord κ, Monoid α) ⇒ Semigroup (Tree κ α) where
+  (<>)  = undefined
 
 instance (Ord κ, Monoid α) ⇒ Monoid (Tree κ α) where
   mempty          = Tree mempty mempty
